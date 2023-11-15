@@ -33,12 +33,16 @@ class TemplateNode(DTROS):
 		img2=image[320:480,: ,:]
 		
 		#Se declara la carpeta donde se guardaran las imagenes (crear en la misma ruta que se encuentra recorder.py)
-		path = '/home/matiuwu/Escritorio/Laboratory juju/recorder1/packages/my_package'
+		directorio =r'/code/'
 		#Se escribe la imagen en la caperta del path
+		os.chdir(directorio)
 		nombre = "imagen"+str(self.i)+".jpg"
-		cv2.imwrite(nombre, cv2.cvtColor(img2, cv2.COLOR_RGB2BGR))
-
-		print("la imagen "+str(nombre)+" se guardo bien uwu")
+		nombre_path = r"/code/"+"imagen"+str(self.i)+".jpg"
+		print("Before saving image:")
+		print(os.listdir(directorio))
+		#aqui se graba la imagen
+		cv2.imwrite(nombre, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+		print("la "+str(nombre)+" se guardó bien uwu")
 		self.i+=1
 """
 def main():
