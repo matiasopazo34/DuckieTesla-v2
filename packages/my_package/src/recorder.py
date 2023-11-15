@@ -30,18 +30,15 @@ class TemplateNode(DTROS):
 	def tomar_img(self, msg):
 		rate = rospy.Rate(10)
 		image = self._bridge.compressed_imgmsg_to_cv2(msg)
-		# bridge = CvBridge()
-		# image = bridge.imgmsg_to_cv2(msg, "bgr8")
+		img2=image[320:480,: ,:]
+		
 		#Se declara la carpeta donde se guardaran las imagenes (crear en la misma ruta que se encuentra recorder.py)
 		path = '/home/matiuwu/Escritorio/Laboratory juju/recorder1/packages/my_package'
 		#Se escribe la imagen en la caperta del path
 		nombre = "imagen"+str(self.i)+".jpg"
-		cv2.imwrite(nombre, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
-		#with open("text.txt","w") as file:
-		#	file.write("I am learning Python!\n")
-		#	file.write("I am really enjoying it!\n")
-		#	file.write("And I want to add more lines to say how much I like it")
-		print("la imagen "+str(nombre)+" se guardó bien uwu")
+		cv2.imwrite(nombre, cv2.cvtColor(img2, cv2.COLOR_RGB2BGR))
+
+		print("la imagen "+str(nombre)+" se guardo bien uwu")
 		self.i+=1
 """
 def main():
