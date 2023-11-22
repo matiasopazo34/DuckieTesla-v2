@@ -32,6 +32,9 @@ class TemplateNode(DTROS):
 		image = self._bridge.compressed_imgmsg_to_cv2(msg, "bgr8")
 		# bridge = CvBridge()
 		# image = bridge.imgmsg_to_cv2(msg, "bgr8")
+		image = self._bridge.compressed_imgmsg_to_cv2(msg)
+		img2=image[320:480,: ,:]
+
 		#Se declara la carpeta donde se guardaran las imagenes (crear en la misma ruta que se encuentra recorder.py)
 		directorio =r'/code/'
 		#Se escribe la imagen en la caperta del path
@@ -41,8 +44,10 @@ class TemplateNode(DTROS):
 		print("Before saving image:")
 		print(os.listdir(directorio))
 		#aqui se graba la imagen
-		cv2.imwrite(nombre, cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+		cv2.imwrite(nombre, cv2.cvtColor(img2, cv2.COLOR_BGR2RGB))
 		print("la imagen "+str(nombre)+" se guardó bien uwu")
+		cv2.imwrite(nombre, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+		print("la "+str(nombre)+" se guardó bien uwu")
 		self.i+=1
 """
 def main():

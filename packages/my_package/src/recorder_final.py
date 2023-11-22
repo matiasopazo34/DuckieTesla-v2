@@ -18,32 +18,80 @@ class TemplateNode(DTROS):
 		#configuración de topicos
 		vehicle_name = os.environ['VEHICLE_NAME']
 		self._camera_topic = f"/{vehicle_name}/camera_node/image/compressed"
-		self._joy = f"/{vehicle_name}/joy"
+		self._joy_topic = f"/{vehicle_name}/joy"
 		#configuracion suscriber y message filters
-		camera_sub = message_filters.Subscriber(self._camera_topic, CompressedImage)
-		joy_sub = message_filters.Subscriber(self._joy, Joy)
+		self.camera_sub = rospy.Subscriber(self._camera_topic, CompressedImage, self.tomar_img)
+		self.joy_sub = rospy.Subscriber(self._joy_topic, Joy, self.writter)
 		# dts = message_filters.ApproximateTimeSynchronizer([camera_sub, joy_sub], queue_size=5, slop=0.1)
 		# dts.registerCallback(tomar_img(self, camera_sub, joy_sub))
 		#importar CvBridge
 		self._bridge = CvBridge()
-		dts = message_filters.ApproximateTimeSynchronizer([camera_sub, joy_sub], queue_size=5, slop=0.1)
-		dts.registerCallback(self.tomar_img)
 		# aqui configuramos el suscriber
 		# self.sub = rospy.Subscriber(self._camera_topic, CompressedImage, self.tomar_img)
 		# variable auxiliar
 		self.i = 0
 
-	def tomar_img(self, camera_sub, joy_sub): #cambiar las cosas por camera y joy
+	def tomar_img(self, msg_camera):
+		rate = rospy.Rate(10)
+		image = self._bridge.compressed_imgmsg_to_cv2(msg_camera)
+		img2=image[180:480,: ,:]
+		self._imagencilla = img2
+
+	def writter(self, msg_joy):
+		imagen = self._imagencilla
+		directorio =r'/code/'
+		os.chdir(directorio)
+		nombre = "imagen"+str(self.i)+".jpg"
+		# nombre_path = r"/code/"+"imagen"+str(self.i)+".jpg"
+		print(os.listdir(directorio))
+		cv2.imwrite(nombre, imagen) #luego se puede procesar la imagen
+		print("la imagen "+str(nombre)+" se guardó bien uwu")
+
+		#CAPTURA DE VELOCIDADES
+		"""
+		sugerencia de código
+		eliminar las lineas 58-66
+
+		agregar:
+		velocidad = str(axes)
+		"""
+		avanzar = msg_joy.axes[1] #va a la izquierda
+		left = 0
+		right = 0
+		
+		if msg_joy.axes[3]>=0: 
+			left=msg_joy.axes[3]
+		elif msg_joy.axes[3]<0:
+			right=-msg_joy.axes[3]
+		
+		velocidad = str(str(avanzar)+","+str(left)+","+str(right))
+		print("esta es la velocidad: "+velocidad)
+		# direction = "vel" #aqui esta el absolute
+		if self.i == 1:
+			#velocidades = open("vel.txt", "x")
+			#velocidades.close()
+			velocidades = open("vel.txt", "w")
+			velocidades.write(velocidad+"\n")
+			velocidades.close()
+		else:
+			velocidades = open("vel.txt", "a")
+			velocidades.write(velocidad+"\n")
+			velocidades.close()
+		print("la velocidad es :"+velocidad)
+		self.i += 1
+
+
+	def tomar_img1(self, camera_sub, joy_sub): #cambiar las cosas por camera y joy
 		rate = rospy.Rate(10)
 		# CAPTURA DE IMAGENES, aqui y siempre se usará el directorio /code
-		image = self._bridge.compressed_imgmsg_to_cv2(camera_sub, "bgr8")
-		directorio =r'/code/'
+		image = self._bridge.compressed_imgmsg_to_cv2(camera_sub, "bgr8") #listo
+		directorio =r'/code/' 
 		#Se escribe la imagen en la carpeta del path
 		os.chdir(directorio)
 		nombre = "imagen"+str(self.i)+".jpg"
 		nombre_path = r"/code/"+"imagen"+str(self.i)+".jpg"
 		print("Before saving image:")
-		print(os.listdir(directorio))
+		print(os.listdir(directorio)) #listo
 		#aqui se graba la imagen
 		cv2.imwrite(nombre, imagen) #luego se puede procesar la imagen
 		print("la imagen "+str(nombre)+" se guardó bien uwu")
