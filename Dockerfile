@@ -90,3 +90,5 @@ LABEL org.duckietown.label.module.type="${REPO_NAME}" \
 # <== Do not change the code above this line
 # <==================================================
 VOLUME /code/
+COPY ./models "/code/models"
+# COPY modeloco.h5 /code/modeloco.h5

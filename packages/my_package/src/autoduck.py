@@ -39,7 +39,7 @@ class TemplateNode(DTROS):
         smart = Point()
         bridge = CvBridge()
         image = bridge.imgmsg_to_cv2(msg, "bgr8")
-        img = image[180:480, :, :]
+        # img = image[180:480, :, :]
         scale_percent = 25 # porcentaje de la imagen original
         width = int(img.shape[1] * scale_percent / 100)
         height = int(img.shape[0] * scale_percent / 100)
