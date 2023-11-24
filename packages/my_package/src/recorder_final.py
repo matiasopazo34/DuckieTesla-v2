@@ -56,9 +56,12 @@ class TemplateNode(DTROS):
 		velocidad = str(axes)
 		"""
 		avanzar = msg_joy.axes[1] #va a la izquierda
+<<<<<<< HEAD
+=======
 		left = 0
 		right = 0
 		
+>>>>>>> 5a3558f2a7daeb11c9617b6d2d4f818b0d3adb7b
 		if msg_joy.axes[3]>=0: 
 			left=msg_joy.axes[3]
 		elif msg_joy.axes[3]<0:
