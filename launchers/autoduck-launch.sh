@@ -6,7 +6,8 @@ source /environment.sh
 dt-launchfile-init
 
 # launch subscriber
-rosrun my_package recorder_final.py
+rosrun my_package autoduck.py
 
 # wait for app to end
 dt-launchfile-join
+
