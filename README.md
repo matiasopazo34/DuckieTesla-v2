@@ -1,47 +1,51 @@
-# Template: template-ros
+# DuckieTesla Mk-II
 
-This template provides a boilerplate repository
-for developing ROS-based software in Duckietown.
+![Duckietown Engineering Chile](https://github.com/Felipeipe/bitacoras-2023/blob/main/img/duckietown_engineering_chile.png?raw=true)
 
-**NOTE:** If you want to develop software that does not use
-ROS, check out [this template](https://github.com/duckietown/template-basic).
+## Intro
 
+Este es un proyecto el cual consiste en la conducción autonoma de un duckiebot. Dicho proyecto utiliza imitation learning y una serie de librerias de python.
 
-## How to use it
+## Requisitos
 
-### 1. Fork this repository
+### Hardware
 
-Use the fork button in the top-right corner of the github page to fork this template repository.
+- Duckiebot Modelo DB-J, con Ubuntu 20.04 instalado
+- Pc con Ubuntu 20.04 instalado, con 40 GB de espacio libre extra, para los datos de entrenamiento
 
+### Software e instalación de dependencias
 
-### 2. Create a new repository
+- Python
+- ROS
+- Tensorflow
+- Docker
+- DuckieTown Shell
+- OpenCV
+- Matplotlib
 
-Create a new repository on github.com while
-specifying the newly forked template repository as
-a template for your new repository.
+#### Para la instalación de dependencias
 
+En la terminal:
 
-### 3. Define dependencies
+### Python3
 
-List the dependencies in the files `dependencies-apt.txt` and
-`dependencies-py3.txt` (apt packages and pip packages respectively).
+```Bash
+sudo apt update
+sudo apt install python3
+```
 
+### Librerias de python3
 
-### 4. Place your code
+```Bash
+pip install tensorflow
+pip install opencv-python
+pip install matplotlib
+```
 
-Place your code in the directory `/packages/` of
-your new repository.
+### DTS
 
+Para la instalación de Duckietown Shell, debe seguirse una serie de pasos para poder configurarlo correctamente. Debe seguir al pie de la letra [este tutorial](https://docs.duckietown.com/daffy/opmanual-duckiebot/setup/setup_laptop/setup_dependencies.html). Debes completar las secciones de [*laptop setup*](https://docs.duckietown.com/daffy/opmanual-duckiebot/setup/setup_laptop/index.html) y de [*accounts*](https://docs.duckietown.com/daffy/opmanual-duckiebot/setup/setup_account/index.html) para luego seguir el readme de [este repositorio](https://github.com/duckietown/duckietown-lx) hasta la sección 2
 
-### 5. Setup launchers
+### ROS
 
-The directory `/launchers` can contain as many launchers (launching scripts)
-as you want. A default launcher called `default.sh` must always be present.
-
-If you create an executable script (i.e., a file with a valid shebang statement)
-a launcher will be created for it. For example, the script file 
-`/launchers/my-launcher.sh` will be available inside the Docker image as the binary
-`dt-launcher-my-launcher`.
-
-When launching a new container, you can simply provide `dt-launcher-my-launcher` as
-command.
+Seguir [este tutorial](http://wiki.ros.org/noetic/Installation/Ubuntu). Si no sabes como modificar el archivo .bashrc, debes seguir [este otro tutorial](https://www.digitalocean.com/community/tutorials/bashrc-file-in-linux)
