@@ -2,22 +2,15 @@
 
 ![Duckietown Engineering Chile](https://github.com/Felipeipe/bitacoras-2023/blob/main/img/duckietown_engineering_chile.png?raw=true)
 
-1. Código fuente listo
-2. paquetes de ros listo
-3. instrucciones de instalacion 
-4. dependencias de software
-5. hardware requerido
-6. documentacion
-
 ## Introducción
 
-Este es un proyecto que consiste en lograr la conducción autonoma de un duckiebot en las calles de DuckieTown. Dicho proyecto utiliza imitation learning cómo método, además de utilizar diverso software y hardware para ello. Se recomienda encarecidamente conocimientos acerca de ROS, dts y python. También se recomienda revisar la documentación oficial de DuckieTown. 
+Este es un proyecto que consiste en lograr la conducción autonoma de un duckiebot en las calles de DuckieTown. Dicho proyecto utiliza imitation learning cómo método, además de utilizar diverso software y hardware para ello. Se recomienda encarecidamente tener conocimientos acerca de ROS, dts y python. También se recomienda revisar la documentación oficial de DuckieTown. 
 
 ## Requisitos y Dependencias
 
 ### Hardware
 
-- Robot Duckiebot Modelo DB21J correctamente configurado, este modelo incluye una tarjeta Nvidia Jetson Nano que se usará posteriormente. Para conseguir el Duckiebot y configurarlo correctamente se recomienda revisar el siguiente repositorio [repositorio oficial de duckietown](https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html)
+- Robot Duckiebot Modelo DB21J  o similares correctamente configurado, este modelo incluye una tarjeta Nvidia Jetson Nano que se usará posteriormente. Para conseguir el Duckiebot y configurarlo correctamente se recomienda revisar el siguiente repositorio [repositorio oficial de duckietown](https://docs.duckietown.com/daffy/opmanual-duckiebot/intro.html)
 - Pc con Ubuntu 20.04 instalado, con 40 GB de espacio libre extra, para los datos de entrenamiento. Además de ello debe tener las dependencias necesarias para ejecutar el proyecto, dichas dependencias se detallarán a continuación.
  
 ### Software e instalación de dependencias
@@ -66,7 +59,7 @@ dts init_sd_card --hostname <Nombre de duckie> --type duckiebot --configuration 
 Seguir [este tutorial](http://wiki.ros.org/noetic/Installation/Ubuntu). Si no sabes como modificar el archivo .bashrc, debes seguir [este otro tutorial](https://www.digitalocean.com/community/tutorials/bashrc-file-in-linux
 
 ## DuckieTesla v2
-Se recomienda visitar la documentación Duckietown Developer Manual ya que el proyecto está construido tal cómo se detalla ahí, de esta manera le será más fácil comprender los pasos realizados, puede revisar la documentación aqui [DuckieTown Developer Manual](https://docs.duckietown.com/daffy/devmanual-software/intro.html)
+Se recomienda visitar la documentación Duckietown Developer Manual ya que el proyecto está construido tal cómo se detalla ahí, de esta manera le será más fácil comprender los pasos realizados, se puede revisar la documentación aqui [DuckieTown Developer Manual](https://docs.duckietown.com/daffy/devmanual-software/intro.html)
 
 ### PASO 0. Estructura del proyecto
 En este caso, se desarrollaron todos los scripts necesarios dentro de este repositorio. Este se organiza de tal manera que en la carpeta "packages" se encuentran los scripts de python, estos serán ejecutados dentro del duckiebot utilizando dts. Además en la carpeta launchers se encuentran los lanzadores que ejecutan los scripts de packages. Por último en la carpeta entrenamiento se encuentran todas los archivos necesarios para llevar el entrenamiento a cabo, el modo de proceder se detallará a continuación. Nuevamente se recomienda visitar el repositorio Duckietown Developer puesto que ahí se detalla más acerca de esto.
@@ -117,11 +110,15 @@ Para este paso se utilizará sólo la carpeta /entrenamiento de este repositorio
 
 Una vez con la carpeta anterioermente generada de datos es necesario exportarlos a la carpeta de /entrenamiento, en este caso todas las imágenes deben ser puestas en la carpeta /frames y el archivos de velocidades "vel.txt" dentro del directorio /entrenamiento, en el repositorio hay datos de muestra para guiar este proceso, estos datos de muestra sólo son de referencia, por favor eliminelos al momento de entrenar.
 
-Una vez con los archivos colocados se deben ejecutar los scripts que están dentro de /entrenamiento con una terminal desde dicha carpeta, primero el reader
+Una vez con los archivos colocados dirigirse a reader.py , modificar el path (si no se ha hecho aun) e indicar el número de datos que se quieren procesar en el entrenamiento, que son los datos obtenidos en el paso 1.
+
+Luego se deben ejecutar los scripts que están dentro de /entrenamiento con una terminal desde dicha carpeta, primero el reader
 ```Bash
 python3 reader.py 
 ```
 Esto es solamente para asegurarse que los datos sean leídos.
+
+Luego se utilizará neural.py, donde se encontrará la estructura de una red neuronal convolucional, la cual fue utilizada para procesar las imágenes asociadas a sus respectivas velocidades. Una capa de convolución es básicamente un preprocesamiento de los frames, haciéndolos pasar por filtros representados por matrices. Así, se aplica una operación matricial a cada mapa de características, generando nuevas imágenes alteradas que servirán para detectar patrones.
 
 Luego dirigirse a neural.py y modificarlo, en este caso se debe especificar la ruta de guardado del modelo y su respectivo nombre dentro de las siguientes lineas de código
 ```Bash
@@ -131,7 +128,22 @@ Luego dirigirse a neural.py y modificarlo, en este caso se debe especificar la r
 99  #En este caso en particular no se uso un conjunto de validación exterior
 100 name = 'nombre del modelo'
 ```
-ahora se procede al entrenamiento, una vez ejecutándose dentro de la terminal se puede ver el progreso del entrenamiento con el archivo del modelo como resultado.
+ahora se procede al entrenamiento, una vez ejecutándose dentro de la terminal se puede ver el progreso del entrenamiento con el archivo del modelo como resultado. Cuando termine de cargar, se verá el contador epoch 7/7 y un aviso de que el modelo ya esta listo. Ahora tendrá su modelo en la carpeta models listo para ser usado, para ello se utiliza el siguiente comando:
 ```Bash
 python3 neural.py 
 ```
+Una vez alcanzado este punto se habrá concluido el entrenamiento, con el archivo del modelo creado y por ende se puede proceder a la siguiente etapa.
+
+### PASO 3. Implementación de la IA
+
+Con el modelo creado, es necesario importar este a la carpeta /ENTRENAMIENTO/models, esto ya que es necesario importar el modelo a los containers de docker.
+Una vez hecho esto nuevamente se debe ejecutar dts devel build -f para guardar los cambios.
+```Bash
+dts devel build -f
+```
+Por último, solamente se debe ejecutar el archivo autoduck.py para lograr el manejo autónomo del duckiebot, utilizando dts devel run de la siguiente manera
+```Bash
+dts devel run -R nombre_duckiebot -L autoduck-launch
+```
+
+Con esto el duckiebot debería recorrer perfectamente las calles de duckietown. Cabe decir que se debe modificar el repositorio en este último paso ya que esto no se ha podido probar con algún duckiebot, sin embargo se detallan las instrucciones para que grupos a futuro logren ejecutar este proyecto. Por último se dan agradecimientos a los proyectos anteriores que vienen desarrollando este proyecto, ya que son la base para lograr lo expuesto aquí.
