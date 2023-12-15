@@ -56,7 +56,7 @@ dts init_sd_card --hostname <Nombre de duckie> --type duckiebot --configuration 
 
 ### ROS
 
-Seguir [este tutorial](http://wiki.ros.org/noetic/Installation/Ubuntu). Si no sabes como modificar el archivo .bashrc, debes seguir [este otro tutorial](https://www.digitalocean.com/community/tutorials/bashrc-file-in-linux
+Seguir [este tutorial](http://wiki.ros.org/noetic/Installation/Ubuntu). Si no sabes como modificar el archivo .bashrc, debes seguir [este otro tutorial](https://www.digitalocean.com/community/tutorials/bashrc-file-in-linux)
 
 ## DuckieTesla v2
 Se recomienda visitar la documentación Duckietown Developer Manual ya que el proyecto está construido tal cómo se detalla ahí, de esta manera le será más fácil comprender los pasos realizados, se puede revisar la documentación aqui [DuckieTown Developer Manual](https://docs.duckietown.com/daffy/devmanual-software/intro.html)
