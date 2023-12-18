@@ -34,7 +34,9 @@ from keras.utils import to_categorical  # Reemplazar np_utils por to_categorical
 from keras.preprocessing.image import ImageDataGenerator
 import reader as rd  # Asumo que "reader" es un módulo personalizado que tienes en tu proyecto
 
-
+#se debe modificar el directorio en donde se guardará el modelo
+path = '~/Desktop/'
+name = 'modeloco'
 #Se descarga conjunto de entrenamiento
 
 X_train = rd.X  
@@ -54,6 +56,7 @@ print("Training Y matrix shape", Y_train.shape)
 model = Sequential()                                   # Apilado lineal de capas
 
 # Capa de convolución 1
+#model.add(Conv2D(32, (3, 3), input_shape=(37,80,3))) # 32 kernels de 3x3 diferentes --> 32 feature map
 model.add(Conv2D(32, (3, 3), input_shape=(75,160,3))) # 32 kernels de 3x3 diferentes --> 32 feature map, aqui va el tamaño de las imágenes
 model.add(BatchNormalization(axis=-1))                 # normalizar cada feature map antes de la activación
 convLayer01 = Activation('relu')                       # activación
@@ -93,11 +96,8 @@ model.add(Activation('softmax'))                     # activacion softmax
 #model.summary()                                     #CUIDADO, para ver el resumen del modelo
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-#Se entrega dirección donde se guarda el modelo (modificar)
-path = 'D:\modelo_de_ia'
 # Se corre el modelo con el conjunto de entrenamiento
 #En este caso en particular no se uso un conjunto de validación exterior
-name = 'modeloco'
 model.fit(X_train,Y_train, epochs=8 , verbose=1, batch_size=20, validation_split=0.20, validation_data=None)
 model.save(os.path.join(path,"models", name + ".h5"))
 print('Modelo listo con nombre: ' + name )

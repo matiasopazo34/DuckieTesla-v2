@@ -9,9 +9,11 @@ import numpy as np
 import cv2
 
 #Se entrega el path, la cantidad de datos (modificar)
-n_datos = 30
+n_datos = 30497
 #Poner dirección donde se encuentra carpeta frames y vel.txt
-path = "/home/matiuwu/Escritorio/Laboratory juju/DuckieTesla_v.2/ENTRENAMIENTO/"
+#si la carpeta frames y vel.txt se encuentra en el mismo directorio que 
+#reader.py, se debe dejar tal cual como está el path que esta abajo
+path = ""
 
 #Por defecto debe crear carpeta frames en mismo archivo donde se encuentra reader.py
 #El archivo de texto es creado automaticamente en este mismo archivo
@@ -20,11 +22,12 @@ path = "/home/matiuwu/Escritorio/Laboratory juju/DuckieTesla_v.2/ENTRENAMIENTO/"
 X = []
 Y = []
 #Arreglo auxiliar para traspasar las variables lineales y angulares a un solo valor
+#Y_ = np.loadtxt(os.path.join(path,'vel.txt'), delimiter = ',', max_rows = n_datos)
 Y_ = np.loadtxt(os.path.join(path,'vel.txt'), delimiter = ',', max_rows = n_datos)
-
+print("vamos bien, me voy a demorar un poco")
 for i in range(1,n_datos):
     #Se lee la imagen i-ésima
-    img = cv2.imread(os.path.join(path,"frames", "imagen{}.jpg".format(i)))
+    img = cv2.imread(os.path.join(path,'Frames', "imagen{}.jpg".format(i)))
     #Se reescala la imagen un 25%  640 x 480 -> 160 x 120
     scale_percent = 25 # porcentaje de la imagen original
     width = int(img.shape[1] * scale_percent / 100)
