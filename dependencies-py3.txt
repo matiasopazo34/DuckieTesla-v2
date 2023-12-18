@@ -1,6 +1,6 @@
 # LIST YOUR PYTHON3 PACKAGES HERE
 # NOTE: only place non-Duckietown libraries here; pin versions only if necessary
-numpy==1.21
+numpy==1.23
 opencv-python
 tensorflow==2.10.0
 h5py

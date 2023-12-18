@@ -1,0 +1,1 @@
+En este directorio debe copiarse el modelo entrenado por la IA

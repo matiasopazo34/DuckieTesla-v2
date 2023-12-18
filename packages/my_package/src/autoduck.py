@@ -11,12 +11,9 @@ from duckietown_msgs.msg import Twist2DStamped
 import cv2 # importar libreria opencv
 from cv_bridge import CvBridge # importar convertidor de formato de imagenes
 import message_filters
-
 from duckietown.dtros import DTROS, NodeType
 from sensor_msgs.msg import CompressedImage, Image, Joy
 from duckietown_msgs.msg import WheelsCmdStamped
-
-
 
 path = '/code'
 #Se tiene modelo de prueba por defecto en carpeta models
@@ -32,9 +29,21 @@ class TemplateNode(DTROS):
         self._publisher = rospy.Publisher(self._wheels_topic, WheelsCmdStamped, queue_size=1)
         self.pub_pos = rospy.Publisher("/duckiebot/smart", Point, queue_size = 1) 
         self.twist = Twist2DStamped()
-        self.model = tf.keras.models.load_model(os.path.join(path,"models", "modeloco.h5"))
+        self.model = tf.keras.models.load_model(os.path.join(path,"models", "modeloco.h5"),compile=False)
+        self.model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    """   
+    def check_tensorflow_gpu(self, context: Context):
+        #import tensorflow as tf
+        name = tf.test.gpu_device_name()
+        context.info(f"gpu_device_name: {name!r} ")
+        if not name:
+            no_hardware_GPU_available(context)
+    """   
 
     def callback(self,msg):
+        #context.info("Checking GPU availability...")
+        limit_gpu_memory()
+        #self.check_tensorflow_gpu(context)
         #se obtiene una imagen
         smart = Point()
         bridge = CvBridge()
@@ -67,31 +76,25 @@ class TemplateNode(DTROS):
         elif _key == 2:
             #pa la izquierda
             self.twist.omega = 1*10
-
-        
         self.pub_pos.publish(smart)
         print("publicado")
-        
-"""
-# Se cierra el environment y termina el programa
-def main():
-    rospy.init_node('test') #creacion y registro del nodo!
 
-    obj = Template('args') # Crea un objeto del tipo Template, cuya definicion se encuentra arriba
-
-    #objeto.publicar() #llama al metodo publicar del objeto obj de tipo Template
-
-    rospy.spin() #funcion de ROS que evita que el programa termine -  se debe usar en  Subscribers
-
+def limit_gpu_memory(memory_limit: int = 1024):
+    """Restricts TensorFlow to only allocated 1GB of memory on the first GPU"""
+    #import tensorflow as tf
+    physical_gpus = tf.config.experimental.list_physical_devices("GPU")
+    if physical_gpus:
+        try:
+            c = [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=memory_limit)]
+            tf.config.experimental.set_virtual_device_configuration(physical_gpus[0], c)
+            logical_gpus = tf.config.experimental.list_logical_devices("GPU")
+            logger.info(num_physical_gpus=len(physical_gpus), num_logical_gpus=len(logical_gpus))
+        except RuntimeError as e:
+            # Virtual devices must be set before GPUs have been initialized
+            logger.error(e)      
 
 if __name__ =='__main__':
-    main()
-"""    
-    
-if __name__ =='__main__':
-	# create the node
-	node = TemplateNode(node_name='template_node') # creacion del nodo
-	# keep spinning
-	rospy.spin()
-
-
+    # create the node
+    node = TemplateNode(node_name='template_node') # creacion del nodo
+    # keep spinning
+    rospy.spin()

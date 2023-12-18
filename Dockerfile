@@ -1,6 +1,6 @@
 # parameters
-ARG REPO_NAME="recorder1"
-ARG DESCRIPTION="este programa graba el dataset"
+ARG REPO_NAME="DuckieTesla-v2"
+ARG DESCRIPTION="repositorio oficial de duckitesla reloaded"
 ARG MAINTAINER="matias (matiasopazo34@gmail.com)"
 # pick an icon from: https://fontawesome.com/v4.7.0/icons/
 ARG ICON="cube"
@@ -89,6 +89,7 @@ LABEL org.duckietown.label.module.type="${REPO_NAME}" \
     org.duckietown.label.maintainer="${MAINTAINER}"
 # <== Do not change the code above this line
 # <==================================================
+#monta un volumen en code, todo lo genrado en code se guardaraen el computador
 VOLUME /code/
 COPY ./models "/code/models"
 # COPY modeloco.h5 /code/modeloco.h5
