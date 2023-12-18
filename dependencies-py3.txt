@@ -2,5 +2,5 @@
 # NOTE: only place non-Duckietown libraries here; pin versions only if necessary
 numpy==1.21
 opencv-python
-tensorflow
+tensorflow==2.10.0
 h5py
